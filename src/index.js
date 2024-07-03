@@ -1,26 +1,11 @@
-const express = require('express')
-const users =require('./dados/dados')
+const express = require('express');
 const app = express()
+const rotas = require('./rotas');
 
-app.get('/users', (req, res) => {
-    console.log("Dentro do endpoint")
-    res.status(200)
-    res.send(users)
-});
+app.use(rotas);
 
-app.get('/users/:id', (req, res) => {
-    const { id } = req.params;
+const port = 3000
 
-    if (Number(id) >users.length){
-        res.send("Usuário não cadastrado.")
-    }
-
-    const user = users.find(user => user.id === Number(id)) 
-    console.log(user)
-    res.status(200)
-    res.send(user)
-});
-
-app.listen(3000, ()=>{
-    console.log("Runinng Server")
+app.listen(port, () => {
+    console.log(`Runinng Server at ${port}`)
 })

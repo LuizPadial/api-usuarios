@@ -1,8 +1,9 @@
 const express = require('express');
 const app = express()
-const rotas = require('./rotas');
+const routers = require('./routers');
 
-app.use(rotas);
+app.use(express.json());
+app.use(routers);
 
 const port = 3000
 

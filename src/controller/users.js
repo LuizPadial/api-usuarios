@@ -1,4 +1,3 @@
-const users = require('../database/data')
 const pool = require('../connection')
 
 const usersList = async (req, res) => {
@@ -34,6 +33,18 @@ const userCreate = async (req, res) => {
     const {name, email, password} = req.body;
 
     try {
+        if(!name || !email || !password){
+            return res.status(400).json({message: "All fields must be filled"});
+        }
+
+        const queryEmailExists ="select * from users where email = $1";
+        const paramsEmailExists = [email];
+        const emailAlreadyExists = await pool.query(queryEmailExists, paramsEmailExists);
+
+        if (emailAlreadyExists.rowCount > 0){
+            return res.status(400).json({message: "Email already exists"})
+        }
+
         const query = "insert into users (name, email, password) values ($1, $2, $3) returning *";
         const params = [name, email, password];
         const user = await pool.query(query, params);
@@ -50,6 +61,19 @@ const userUpdate = async (req, res) => {
     const {name, email, password} = req.body
 
     try {
+        if(!name || !email || !password){
+            return res.status(400).json({message: "All fields must be filled"});
+        }
+
+
+        const queryEmailExists ="select * from users where email = $1";
+        const paramsEmailExists = [email];
+        const emailAlreadyExists = await pool.query(queryEmailExists, paramsEmailExists);
+
+        if (emailAlreadyExists.rowCount > 0){
+            return res.status(400).json({message: "Email already exists"})
+        }
+
         const query =
         "update users set name = $1, email = $2, password = $3 where id = $4 returning *";
         const params = [name, email, password, Number(id)]
